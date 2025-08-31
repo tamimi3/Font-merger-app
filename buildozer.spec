@@ -4,7 +4,7 @@
 title = Font Merger
 
 # اسم الحزمة
-package.name = fontmerger
+package.name = com.tamimi3.fontmerger
 
 # نسخة التطبيق
 version = 1.0
@@ -15,7 +15,8 @@ source.dir = .
 # امتدادات الملفات المضمنة
 source.include_exts = py,png,jpg,kv,atlas
 
-# المتطلبات (المكتبات)equirement = python3,kivy,fonttools,pillow,arabic-reshaper,python-bidi,uharfbuzz
+# المتطلبات (المكتبات)
+requirement = python3,kivy,fonttools,pillow,arabic-reshaper,python-bidi,uharfbuzz
 
 # اتجاه الشاشة
 orientation = portrait
