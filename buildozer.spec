@@ -1,59 +1,31 @@
 [app]
-
-# (str) Title of your application
+# (تعديل عام)
 title = Font Merger
-
-# (str) Package name
 package.name = fontmerger
-
-# (str) Package domain (needed for android/ios packaging)
-package.domain = com.example
-
-# (str) Source code where the main.py live
+package.domain = org.example
 source.dir = .
-
-# (list) Source files to include (let empty to include all the files)
-source.include_exts = py,png,jpg,kv,atlas
-
-# (list) List of inclusions using pattern matching
-#source.include_patterns = assets/*,images/*.png
-
-# (list) Source files to exclude (let empty to not exclude anything)
-source.exclude_exts = spec
-
-# (list) List of directory to exclude (let empty to not exclude anything)
-source.exclude_dirs = tests, bin, venv
-
-# (list) List of exclusions using pattern matching
-#source.exclude_patterns = license,images/*/*.jpg
-
-# (str) Application versioning (method 1)
+source.include_exts = py,kv,ttf,otf,png,jpg
 version = 0.1
+orientation = portrait
+android.arch = armeabi-v7a, arm64-v8a
 
-# (list) Application requirements
-# comma separated e.g. requirements = sqlite3,kivy
-requirements = python3,kivy,fonttools  # أضف fonttools إذا لم يكن موجوداً
+# أهم: ضع الحزم التي يحتاجها التطبيق
+requirements = python3,kivy,fonttools
 
-# (str) Presplash of the application
-#presplash.filename = %(source.dir)s/data/presplash.png
+# أذونات: للقراءة/الكتابة على الذاكرة الخارجية (Android 6+ بحاجة لطلب وقت التشغيل أيضاً)
+android.permissions = READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE
 
-# (str) Icon of the application
-#icon.filename = %(source.dir)s/data/icon.png
-
-# (list) Permissions
-permissions = android.permission.READ_EXTERNAL_STORAGE,android.permission.WRITE_EXTERNAL_STORAGE  # إضافة الإذونات هنا
-
-# (int) Target Android SDK
-android.sdk = 33  # حدث لدعم Android حديث
-
-# (int) Minimum API your APK will support
-android.minapi = 21
-
-# (int) Android API that you want to use
+# تأكد من API مناسبة (يمكن تعديلها حسب حاجتك)
 android.api = 33
+android.minapi = 21
+android.sdk = 33
+# لمنع مشكلات توقيع أو ndk
+# (يمكن تعديل android.ndk/ndk-api لو احتجت)
+# p4a.branch = stable
 
-# (bool) Indicate whether the package should be debuggable or not
-android.debuggable = True
+# تضمين ملفات الخطوط إن كنت تريد حزمها داخل الـAPK (اختياري)
+#android.add_jar = 
 
-# (str) Android logcat filters to use
-android.logcat_filters = *:S python:D
+# إعدادات أخرى مفيدة
+log_level = 2
+# (إن أردت ملفات أكبر ضع android.release = 1 عند الإصدار)
