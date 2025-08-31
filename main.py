@@ -1,74 +1,44 @@
-#!/usr/bin/env python3
-"""
-دمج الخطوط مع معاينة عالية الجودة
-Font merger with high-quality preview
-"""
-
+from kivy.app import App
+from kivy.uix.label import Label
+from kivy.uix.button import Button
+from kivy.uix.boxlayout import BoxLayout
+from android.permissions import request_permissions, Permission
 import os
-import sys
-import subprocess
-import time
-import traceback
-import shutil
-import tempfile
-from fontTools.ttLib import TTFont
-try:
-    from fontTools.varLib.instancer import instantiateVariableFont
-except Exception:
-    try:
-        from fontTools.varLib.mutator import instantiateVariableFont
-    except Exception:
-        instantiateVariableFont = None
+from fonttools.merge import Merger  # تأكد من تثبيت fonttools في requirements
 
-from fontTools.merge import Merger
-from fontTools.subset import main as subset_main
-from PIL import Image, ImageDraw, ImageFont, features
-import arabic_reshaper
-from bidi.algorithm import get_display
+class FontMergerApp(App):
+    def build(self):
+        layout = BoxLayout(orientation='vertical')
+        self.status = Label(text='جاهز للدمج...')
+        button = Button(text='دمج الخطوط')
+        button.bind(on_press=self.merge_fonts)
+        layout.add_widget(self.status)
+        layout.add_widget(button)
+        request_permissions([Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE])  # طلب الإذونات
+        return layout
 
-# محاولة استيراد harfbuzz و uharfbuzz
-try:
-    import harfbuzz as hb
-except ImportError:
-    try:
-        import uharfbuzz as hb
-    except ImportError:
-        hb = None
+    def merge_fonts(self, instance):
+        try:
+            fonts_dir = '/sdcard/fonts'
+            if not os.path.exists(fonts_dir):
+                os.makedirs(fonts_dir)
+                self.status.text = 'تم إنشاء المجلد /sdcard/fonts'
+                return
 
-# ======= تعديل مسار التخزين الخارجي ليتوافق مع الأندرويد أو سطح المكتب =======
-def get_storage_path():
-    try:
-        from android.storage import primary_external_storage_path
-        return primary_external_storage_path()
-    except ImportError:
-        return os.path.expanduser("~")
+            font_files = [f for f in os.listdir(fonts_dir) if f.endswith(('.ttf', '.otf'))]
+            if len(font_files) < 2:
+                self.status.text = 'ضع خطوطاً أكثر في /sdcard/fonts'
+                return
 
-STORAGE_ROOT = get_storage_path()
-FONT_DIR = os.path.join(STORAGE_ROOT, "fonts")
-TEMP_DIR = os.path.join(FONT_DIR, "temp_processing")
-# ============================================================================
+            merger = Merger()
+            merged = merger.merge([os.path.join(fonts_dir, f) for f in font_files])
+            output_path = os.path.join(fonts_dir, 'merged_font.ttf')
+            merged.font.save(output_path)
+            self.status.text = f'تم الدمج في {output_path}'
 
-EN_PREVIEW = "The quick brown fox jumps over the lazy dog. 1234567890"
-AR_PREVIEW = "سمَات مجانية، إختر مِنْ بين أكثر من ١٠٠ سمة مجانية او انشئ سماتك الخاصة هُنا في هذا التطبيق النظيف ..."
+        except Exception as e:
+            self.status.text = f'خطأ: {str(e)}'
+            print(e)  # للسجلات في logcat
 
-# إنشاء المجلد المؤقت إذا لم يكن موجوداً
-os.makedirs(TEMP_DIR, exist_ok=True)
-
-# إنشاء المجلدات الفرعية
-os.makedirs(os.path.join(FONT_DIR, "previews"), exist_ok=True)
-os.makedirs(os.path.join(FONT_DIR, "merged"), exist_ok=True)
-os.makedirs(os.path.join(FONT_DIR, "logs"), exist_ok=True)
-
-# ---------- Logging ----------
-def get_unique_log_path():
-    """الحصول على مسار فريد لملف السجل"""
-    base_name = "merge_log"
-    counter = 1
-    log_file = os.path.join(FONT_DIR, "logs", f"{base_name}.txt")
-    while os.path.exists(log_file):
-        log_file = os.path.join(FONT_DIR, "logs", f"{base_name}_{counter}.txt")
-        counter += 1
-    return log_file
-
-# باقي الكود كما هو. (لم يتغير اي منطق برمجي عدا المسارات) 
-# ... (تابع باقي الكود الحالي من السطر 51 وما بعده)
+if __name__ == '__main__':
+    FontMergerApp().run()
