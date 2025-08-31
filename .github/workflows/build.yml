@@ -1,18 +1,24 @@
 name: Build APK
-on: [push]
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.10'
-    - name: Install deps
-      run: |
-        pip install --upgrade pip
-        pip install buildozer==1.6.4 python-for-android==2024.7.0
-    - name: Build APK
-      run: |
-        buildozer -v android debug
+      - uses: actions/checkout@v4
+
+      - name: Build APK with buildozer-action
+        uses: digreatbrian/buildozer-action@v2
+        with:
+          python-version: 3.10
+          buildozer-cmd: buildozer -v android debug
+
+      - name: Upload artifact (APK)
+        uses: actions/upload-artifact@v4
+        with:
+          name: apk
+          path: ./bin/*.apk
