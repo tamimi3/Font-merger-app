@@ -1,3 +1,4 @@
+# .github/workflows/build.yml
 name: Build APK
 
 on:
@@ -8,16 +9,19 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
 
-      # اضبط هنا python-version إلى 3.10 (لم يكن 3.1)
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
       - name: Build APK with buildozer-action
         uses: digreatbrian/buildozer-action@v2
         with:
-          python-version: 3.10
           buildozer-cmd: buildozer -v android debug
+          # لا تُمرّر python-version هنا إذا استخدمت setup-python أعلاه
 
       - name: Upload artifact (APK)
         if: success()
