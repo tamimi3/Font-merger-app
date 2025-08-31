@@ -15,8 +15,7 @@ source.dir = .
 # امتدادات الملفات المضمنة
 source.include_exts = py,png,jpg,kv,atlas
 
-# المتطلبات (المكتبات) - أضفت التبعيات الكاملة من السكريبت
-requirements = python3,kivy,fonttools,pillow,arabic-reshaper,bidi,uharfbuzz
+# المتطلبات (المكتبات)equirement = python3,kivy,fonttools,pillow,arabic-reshaper,python-bidi,uharfbuzz
 
 # اتجاه الشاشة
 orientation = portrait
@@ -44,3 +43,6 @@ icon.filename =
 
 # تجاهل بعض الملفات
 ignore_pattern = CVS, .*, *.pyc, *.pyo, __pycache__
+
+[cython]
+language_level = 3
