@@ -1,5 +1,4 @@
 [app]
-# (تعديل عام)
 title = Font Merger
 package.name = fontmerger
 package.domain = org.example
@@ -9,23 +8,21 @@ version = 0.1
 orientation = portrait
 android.arch = armeabi-v7a, arm64-v8a
 
-# أهم: ضع الحزم التي يحتاجها التطبيق
-requirements = python3,kivy,fonttools
+# Requirements: اضبط النسخ حسب حاجتك. fonttools بالاسم الصغير.
+requirements = python3,kivy==2.1.0,fonttools
 
-# أذونات: للقراءة/الكتابة على الذاكرة الخارجية (Android 6+ بحاجة لطلب وقت التشغيل أيضاً)
+# أذونات
 android.permissions = READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE
 
-# تأكد من API مناسبة (يمكن تعديلها حسب حاجتك)
+# API / SDK / NDK — قيم شائعة تعمل عادةً
 android.api = 33
 android.minapi = 21
 android.sdk = 33
-# لمنع مشكلات توقيع أو ndk
-# (يمكن تعديل android.ndk/ndk-api لو احتجت)
-# p4a.branch = stable
+android.ndk = 23b
+android.ndk_api = 21
 
-# تضمين ملفات الخطوط إن كنت تريد حزمها داخل الـAPK (اختياري)
-#android.add_jar = 
+# استخدم فرع حديث من python-for-android إذا احتجت
+p4a.branch = master
 
-# إعدادات أخرى مفيدة
+# logging
 log_level = 2
-# (إن أردت ملفات أكبر ضع android.release = 1 عند الإصدار)
