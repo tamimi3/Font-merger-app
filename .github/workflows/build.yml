@@ -1,14 +1,9 @@
-# .github/workflows/build.yml
 name: Build APK
-
-on:
-  push:
-    branches: [ main ]
-  workflow_dispatch:
+on: [push, workflow_dispatch]
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
 
@@ -21,7 +16,7 @@ jobs:
         uses: digreatbrian/buildozer-action@v2
         with:
           buildozer-cmd: buildozer -v android debug
-          # لا تُمرّر python-version هنا إذا استخدمت setup-python أعلاه
+          work-dir: .
 
       - name: Upload artifact (APK)
         if: success()
